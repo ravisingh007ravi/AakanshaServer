@@ -3,6 +3,7 @@ const { validName, validEmail, validPassword } = require('../validation/AllValid
 const { verifyUserOtp } = require('../mail/nodemail')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const {AllError} =require('../error/errorhandling')
 require('dotenv').config()
 
 exports.CreateUser = async (req, res) => {
@@ -13,15 +14,6 @@ exports.CreateUser = async (req, res) => {
         const {name,  email, password } = data
 
         const randomOtp = Math.floor(1000 + Math.random() * 9000);
-
-        if (!name) return res.status(400).send({ status: false, msg: "name is required" })
-        if (!validName(name)) return res.status(400).send({ status: false, msg: "name is not valid" })
-
-        if (!email) return res.status(400).send({ status: false, msg: "email is required" })
-        if (!validEmail(email)) return res.status(400).send({ status: false, msg: "email is not valid" })
-
-        if (!password) return res.status(400).send({ status: false, msg: "password is required" })
-        if (!validPassword(password)) return res.status(400).send({ status: false, msg: "password is not valid" })
 
         const existingUser = await userModel.findOneAndUpdate({ email }, { $set: { 'verification.user.userOtp': randomOtp } })
 
@@ -39,7 +31,10 @@ exports.CreateUser = async (req, res) => {
             return res.status(200).send({ status: true, msg: 'OTP sent successfully', data: DBDATABASE });
         }
 
-        const hashPassword = await bcrypt.hash(password, 10)
+        const hashPassword = await bcrypt.hash(password, 10) 
+
+        data.verification = {};
+        data.verification.user = {};
 
         data.password = hashPassword
         data.verification.user.userOtp = randomOtp
@@ -52,8 +47,27 @@ exports.CreateUser = async (req, res) => {
 
         res.status(201).send({ status: true, msg: "Successfully created Data", data: DBData })
     }
-    catch (error) { res.status(500).send({ status: false, msg: error.message }) }
+    catch (error) {AllError(error, res)  }
 
+}
+
+
+exports.resendUserOtp = async (req, res) => {
+    try {
+        const id = req.params.id;
+        
+        const DB = await userModel.findById(id)
+        if (!DB) return res.status(400).send({ status: false, msg: "User not found" })
+
+        const randomOtp = Math.floor(1000 + Math.random() * 9000);
+
+        DB.verification.user.userOtp = randomOtp
+
+        await DB.save()
+        verifyUserOtp(DB.name, DB.email, randomOtp);
+        res.status(200).send({ status: true, msg: "OTP sent successfully" })
+    }
+    catch (err) { res.status(500).send({ status: false, msg: err.message }) }
 }
 
 exports.userOtpVerifucation = async (req, res) => {
@@ -76,7 +90,7 @@ exports.userOtpVerifucation = async (req, res) => {
         await userModel.findByIdAndUpdate(id, { $set: { 'verification.user.isVerify': true } })
         res.status(200).send({ status: true, msg: "Account verified successfully" })
     }
-    catch (err) { res.status(500).send({ status: false, msg: err.message }) }
+    catch (error) {AllError(error, res)  }
 }
 
 
@@ -85,12 +99,6 @@ try{
     const data = req.body;
                                                                         
     const {email, password} = data;
-
-    if (!email) return res.status(400).send({ status: false, msg: "email is required" })
-    if (!validEmail(email)) return res.status(400).send({ status: false, msg: "email is not valid" })
-
-    if (!password) return res.status(400).send({ status: false, msg: "password is required" })
-    if (!validPassword(password)) return res.status(400).send({ status: false, msg: "password is not valid" })
 
     const DB = await userModel.findOne({email})
 
@@ -110,5 +118,5 @@ try{
     
         res.status(200).send({ status: true, msg: "Successfully Created Token", UserToken: token, UserId: DB._id })
 }
-catch (err) { res.status(500).send({ status: false, msg: err.message }) }
+catch (err) {AllError(err, res)  }
 }

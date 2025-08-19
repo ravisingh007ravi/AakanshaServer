@@ -1,11 +1,21 @@
 const mongoose = require("mongoose");
+const { validName, validEmail, validPassword } = require('../validation/AllValidation')
 
 
 const userShema = new mongoose.Schema({
 
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, trim: true },
-    password: { type: String, required: true, trim: true },
+    name: {
+        type: String, trim: true,
+        required: [true, "Please Enter a name"], validate: [validName, "Please Enter a valid name"]
+    },
+    email: {
+        type: String, required: [true, 'Please Enter a email'], unique: true,
+        validate: [validEmail, "Please Enter a valid email"], trim: true
+    },
+    password: {
+        type: String, required: [true, 'Please Enter a password'],
+        validate: [validPassword, "Please Enter a valid password"], trim: true
+    },
     role: { type: String, enum: ['user', 'admin'], required: true, trim: true },
     verification: {
         user: {
