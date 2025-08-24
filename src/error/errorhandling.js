@@ -1,14 +1,14 @@
 exports.AllError =(err,res)=>{
-    
+
     if(err.name == "TypeError" || err.name == "ValidationError" ){
         return res.status(400).send({ status: false, msg: err.message })
     }
     if(err.name == "JsonWebTokenError" ){
         return res.status(400).send({ status: false, msg: "JWT Invalid Signature" })
     }
-    // if(err.name == "SyntaxError" ){
-    //     return res.status(400).send({ status: false, msg: err.message })
-    // }
+    if(err.name == "SyntaxError" ){
+        return res.status(400).send({ status: false, msg: err.message })
+    }
     if(err.name == "CastError"){
         return res.status(400).send({ status: false, msg: "MongoDb id is Invalid" })
     }

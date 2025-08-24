@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const { validName, validEmail, validPassword } = require('../validation/AllValidation')
+const { validName, validEmail, validPassword } = require('../validation/AllValidation');
+const e = require("express");
 
 
 const userShema = new mongoose.Schema({
@@ -20,12 +21,14 @@ const userShema = new mongoose.Schema({
     verification: {
         user: {
             userOtp: { type: String, default: 0 },
+            expireOtpTime: { type: String, default: 0 },
             isVerify: { type: Boolean, default: false },
             isDeleted: { type: Boolean, default: false },
             isAccountActive: { type: Boolean, default: true }
         },
         admin: {
             adminOtp: { type: String, default: 0 },
+            expireOtpTime: { type: String, default: 0 },
             isVerify: { type: Boolean, default: false },
         }
     }

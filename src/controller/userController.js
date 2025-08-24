@@ -20,9 +20,7 @@ exports.CreateUser = async (req, res) => {
 
         if (existingUser) {
             const DBDATABASE = { name: existingUser.name, email: existingUser.email, _id: existingUser._id }
-
             const userVerification = existingUser.verification?.user || {};
-
             if (userVerification.isDeleted) return res.status(400).send({ status: false, msg: 'User already deleted' });
             if (userVerification.isVerify) return res.status(400).send({ status: false, msg: 'Account already verified, please login' });
             if (!userVerification.isAccountActive) return res.status(400).send({ status: false, msg: 'User is blocked by admin' });
@@ -105,6 +103,8 @@ try{
     if (!DB) return res.status(400).send({ status: false, msg: "User not found" })
 
     const userVerification = DB.verification?.user || {};
+    
+    if(DB.role=='admin') return res.status(400).send({ status: false, msg: 'Your not Authroized' })
 
     if (userVerification.isDeleted) return res.status(400).send({ status: false, msg: 'User already deleted' });
     if (!userVerification.isVerify) return res.status(400).send({ status: false, msg: 'Account not verify , please Sign Up' });

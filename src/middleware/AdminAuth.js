@@ -3,24 +3,22 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 
-exports.userAuthentication = async (req, res, next) => {
+exports.adminAuthentication = async (req, res, next) => {
     try {
         const token = req.headers['x-api-key']
-        console.log(token)
+        
         if (!token) { return res.status(400).send({ status: false, msg: "Token must be present" }) }
 
-        const decoded = jwt.verify(token, process.env.UserTokenKey)
-        req.admin = decodedToken.adminId 
-
-
+        const decodedToken = jwt.verify(token, process.env.AdminTokenKey)
+         req.userId = decodedToken.userId 
         next()
     }
     catch (err) { AllError(err, res) }
 }
 
-exports.userAuthorization = async (req, res, next) => {
+exports.adminAuthorization = async (req, res, next) => {
     try {
-       const AdminTokenId = req.admin
+       const AdminTokenId = req.userId
         const id = req.params.id
        
         if(!id) return res.status(400).send({status:false,msg:"id must be present"})
