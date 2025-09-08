@@ -12,7 +12,7 @@ routes.post('/userOtpVerification/:id', userOtpVerifucation)
 routes.post('/LogInUser', UserLogIn)
 
 // Admin Api's
-routes.get('/getAllUserData', userAuthentication, getAllUserData)
+routes.get('/getAllUserData', adminAuthentication, getAllUserData)
 routes.post('/LogInAdmin', AdminLogIn)
 routes.post('/admin_otp_verification/:id', adminAuthentication, adminAuthorization, AdminOtpVerification)
 

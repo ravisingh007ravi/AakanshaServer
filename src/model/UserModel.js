@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const { validName, validEmail, validPassword } = require('../validation/AllValidation');
-const e = require("express");
+
 
 
 const userShema = new mongoose.Schema({
 
+    profileimg: { type: Object, required: false, trim: true },
     name: {
         type: String, trim: true,
         required: [true, "Please Enter a name"], validate: [validName, "Please Enter a valid name"]
