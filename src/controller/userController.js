@@ -2,7 +2,7 @@ const userModel = require('../model/UserModel')
 const { validName, validEmail, validPassword } = require('../validation/AllValidation')
 const { verifyUserOtp } = require('../mail/nodemail')
 const bcrypt = require('bcrypt')
-const {UserLoadImg} = require('../images/UploadImg')
+const { UserLoadImg, deleteProfileImg } = require('../images/UploadImg')
 const jwt = require('jsonwebtoken')
 const { AllError } = require('../error/errorhandling')
 require('dotenv').config()
@@ -123,26 +123,31 @@ exports.UserLogIn = async (req, res) => {
             email: DB.email,
         }
 
-        res.status(200).send({ status: true, msg: "Successfully Created Token", UserToken: token, UserId: DB._id,data:DBDATA})
+        res.status(200).send({ status: true, msg: "Successfully Created Token", UserToken: token, UserId: DB._id, data: DBDATA })
     }
     catch (err) { AllError(err, res) }
 }
 
 
-exports.uploadProfileImg =async(req,res)=>{
-    try{
+exports.uploadProfileImg = async (req, res) => {
+    try {
 
         const id = req.params.id
         const img = req.file
-        if(!img) return res.status(400).send({status:false,msg:"img must be present"})
-        if(!id) return res.status(400).send({status:false,msg:"id must be present"})
-        
-        const checkUser  = await userModel.findById(id)
-        if(!checkUser) return res.status(400).send({status:false,msg:"User not found"})
+        if (!img) return res.status(400).send({ status: false, msg: "img must be present" })
+        if (!id) return res.status(400).send({ status: false, msg: "id must be present" })
+
+        const checkUser = await userModel.findById(id)
+
+        if (!checkUser) return res.status(400).send({ status: false, msg: "User not found" })
+            
+        if (checkUser.profileimg?.public_id) {
+            deleteProfileImg(checkUser.profileimg.public_id)
+        }
         const imgData = await UserLoadImg(img.path)
-       
+
         const updateUserDB = await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'profileimg': imgData } }, { new: true });
-        res.status(200).send({status:true,msg:"Successfully uploaded img",data:updateUserDB})
+        res.status(200).send({ status: true, msg: "Successfully uploaded img", data: updateUserDB })
     }
-    catch(err){AllError(err,res)}
+    catch (err) { AllError(err, res) }
 }
