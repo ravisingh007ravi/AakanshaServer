@@ -122,7 +122,6 @@ exports.UserLogIn = async (req, res) => {
             name: DB.name,
             email: DB.email,
         }
-
         res.status(200).send({ status: true, msg: "Successfully Created Token", UserToken: token, UserId: DB._id, data: DBDATA })
     }
     catch (err) { AllError(err, res) }
@@ -140,14 +139,21 @@ exports.uploadProfileImg = async (req, res) => {
         const checkUser = await userModel.findById(id)
 
         if (!checkUser) return res.status(400).send({ status: false, msg: "User not found" })
-            
+
         if (checkUser.profileimg?.public_id) {
             deleteProfileImg(checkUser.profileimg.public_id)
         }
         const imgData = await UserLoadImg(img.path)
 
         const updateUserDB = await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'profileimg': imgData } }, { new: true });
-        res.status(200).send({ status: true, msg: "Successfully uploaded img", data: updateUserDB })
+
+        const DBDATA = {
+            profileimg: updateUserDB.profileimg,
+            name: updateUserDB.name,
+            email: updateUserDB.email,
+        }
+
+        res.status(200).send({ status: true, msg: "Successfully uploaded img", data: DBDATA })
     }
     catch (err) { AllError(err, res) }
 }

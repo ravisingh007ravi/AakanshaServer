@@ -4,13 +4,13 @@ require('dotenv').config()
 
 
 exports.userAuthentication = async (req, res, next) => {
-    try {
+    try { 
+  
         const token = req.headers['x-api-key']
-        console.log(token)
         if (!token) { return res.status(400).send({ status: false, msg: "Token must be present" }) }
 
         const decoded = jwt.verify(token, process.env.UserTokenKey)
-        req.admin = decodedToken.adminId 
+        req.userId = decoded.userId 
 
 
         next()
@@ -20,12 +20,12 @@ exports.userAuthentication = async (req, res, next) => {
 
 exports.userAuthorization = async (req, res, next) => {
     try {
-       const AdminTokenId = req.admin
+       const userId = req.userId
         const id = req.params.id
        
         if(!id) return res.status(400).send({status:false,msg:"id must be present"})
 
-        if(!(AdminTokenId==id)) return res.status(400).send({status:false,msg:"Unauthorized Admin"})
+        if(!(userId==id)) return res.status(400).send({status:false,msg:"Unauthorized Admin"})
            
         next()
     }
