@@ -1,6 +1,5 @@
 exports.AllError =(err,res)=>{
-
-    if(err.name == "TypeError" || err.name == "ValidationError" ){
+    if(err.name == "TypeError" || err.name == "ValidationError" || err.name ){
         return res.status(400).send({ status: false, msg: err.message })
     }
     if(err.name == "JsonWebTokenError" ){

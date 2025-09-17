@@ -10,7 +10,7 @@ exports.adminAuthentication = async (req, res, next) => {
         if (!token) { return res.status(400).send({ status: false, msg: "Token must be present" }) }
 
         const decodedToken = jwt.verify(token, process.env.AdminTokenKey)
-         req.userId = decodedToken.userId 
+         req.userId = decodedToken.adminId 
         next()
     }
     catch (err) { AllError(err, res) }

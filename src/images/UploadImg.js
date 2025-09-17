@@ -15,6 +15,19 @@ exports.UserLoadImg = async (img) => {
       .resize(1080, 720, { fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 80, mozjpeg: true }).toBuffer();
 
+    const uploadResult = await cloudinary.uploader.upload(
+      `data:image/jpeg;base64,${optimizedBuffer.toString('base64')}`,
+      { resource_type: 'auto', quality: 'auto' });
+    return uploadResult
+  }
+  catch (err) { AllError(err, res) }
+}
+
+exports.ProductLoadImg = async (img) => {
+  try {
+    const optimizedBuffer = await sharp(img)
+      .resize(1080, 1080, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 80, mozjpeg: true }).toBuffer();
 
     const uploadResult = await cloudinary.uploader.upload(
       `data:image/jpeg;base64,${optimizedBuffer.toString('base64')}`,
