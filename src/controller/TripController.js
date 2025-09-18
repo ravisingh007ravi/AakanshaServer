@@ -35,5 +35,23 @@ exports.CreateTrip = async (req, res) => {
 };
 
 
+exports.getAllTrip = async (req, res) => {
+  try {
+    const data = await TripModel.find({isActive:true});
+    return res.status(200).send({ status: true, data: data });
+  } catch (error) {
+    AllError(error, res);
+  }
+};
+
+exports.getTripById =async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const data = await TripModel.findById(id);
+    return res.status(200).send({ status: true, data: data });
+  } catch (error) {
+    AllError(error, res);
+  }
+}
 
 

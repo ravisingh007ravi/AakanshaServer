@@ -3,7 +3,7 @@ const { CreateUser, userOtpVerifucation, UserLogIn, resendUserOtp, uploadProfile
 const { getAllUserData, AdminLogIn, AdminOtpVerification } = require('../controller/adminController')
 const { userAuthentication, userAuthorization } = require('../middleware/userAuth')
 const { adminAuthentication, adminAuthorization } = require('../middleware/AdminAuth')
-const { CreateTrip } = require('../controller/TripController')
+const { CreateTrip, getAllTrip,getTripById } = require('../controller/TripController')
 const multer = require('multer')
 const routes = express.Router();
 
@@ -23,7 +23,8 @@ routes.post('/admin_otp_verification/:id', adminAuthentication, adminAuthorizati
 
 //Create Trip adminAuthentication, adminAuthorization,
 routes.post('/CreateTrip/:id', upload.single('productImg'), CreateTrip)
-
+routes.get('/getAllTrip', getAllTrip)
+routes.get('/getTripById/:id', getTripById)
 
 routes.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 
