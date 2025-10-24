@@ -23,10 +23,11 @@ routes.post('/admin_otp_verification/:id', adminAuthentication, adminAuthorizati
 
 //Create Trip adminAuthentication, adminAuthorization,
 routes.post('/CreateTrip/:id', upload.single('productImg'), CreateTrip)
-routes.get('/getAllTrip', getAllTrip)
+routes.get('/getAllTrip/:cate', getAllTrip)
 routes.get('/getTripById/:id', getTripById)
 
 routes.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 
 module.exports = routes    
 
+ 

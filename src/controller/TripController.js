@@ -37,12 +37,39 @@ exports.CreateTrip = async (req, res) => {
 
 exports.getAllTrip = async (req, res) => {
   try {
-    const data = await TripModel.find({isActive:true});
-    return res.status(200).send({ status: true, data: data });
-  } catch (error) {
+    const { cate } = req.params;
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 10; 
+    const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+
+    let query = { isActive: true };
+    
+    if (cate !== "All") query["location.city"] = cate;
+    
+    if (search) {
+      query.$or = [
+        { "location.city": { $regex: search, $options: 'i' } },
+        { "location.address": { $regex: search, $options: 'i' } },
+        { "location.state": { $regex: search, $options: 'i' } },
+        { "location.country": { $regex: search, $options: 'i' } },
+        { "title": { $regex: search, $options: 'i' } },
+        { "description": { $regex: search, $options: 'i' } },
+        { "activities": { $regex: search, $options: 'i' } },
+        { "tags": { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const total = await TripModel.countDocuments(query);
+    const data = await TripModel.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }); 
+
+    return res.status(200).send({status: true,total,page,totalPages: Math.ceil(total / limit),limit,data,search: search || null});
+  } 
+  catch (error) {
     AllError(error, res);
   }
 };
+
 
 exports.getTripById =async(req,res)=>{
   try {
@@ -53,5 +80,7 @@ exports.getTripById =async(req,res)=>{
     AllError(error, res);
   }
 }
+
+
 
 

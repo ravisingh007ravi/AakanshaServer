@@ -11,7 +11,6 @@ const tripSchema = new mongoose.Schema(
       minlength: [3, "Title must be at least 3 characters long"],
       maxlength: [100, "Title cannot exceed 100 characters"],
     },
-
     description: {
       type: String,
       required: [true, "Trip description is required"],
@@ -21,7 +20,7 @@ const tripSchema = new mongoose.Schema(
 
     location: {
       country: { type: String, required: true },
-      city: { type: String, required: true },
+      city: { type: String,enum: ["Manali", "Kedarnath", "Shimla", "Leh", "Goa", "Nainital", "Ooty","Udaipur","Uttarakhand","Uttar Pradesh"], required: true },
       address: { type: String },
     },
 
