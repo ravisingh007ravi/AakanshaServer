@@ -100,7 +100,7 @@ exports.UserLogIn = async (req, res) => {
         const { email, password } = data;
 
         const DB = await userModel.findOne({ email })
-
+        
         if (!DB) return res.status(400).send({ status: false, msg: "User not found" })
 
         const userVerification = DB.verification?.user || {};

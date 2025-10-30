@@ -32,7 +32,8 @@ const userShema = new mongoose.Schema({
             expireOtpTime: { type: String, default: 0 },
             isVerify: { type: Boolean, default: false },
         }
-    }
+    },
+   
 
 },
     { timestamps: true }

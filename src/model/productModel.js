@@ -88,6 +88,11 @@ const tripSchema = new mongoose.Schema(
       ref: "User", // Admin User
       required: true,
     },
+    mapLocation:{
+      type: String,
+      required: false,
+      trim: true
+    },
 
     isActive: { type: Boolean, default: true },
   },

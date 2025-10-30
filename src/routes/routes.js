@@ -4,6 +4,7 @@ const { getAllUserData, AdminLogIn, AdminOtpVerification } = require('../control
 const { userAuthentication, userAuthorization } = require('../middleware/userAuth')
 const { adminAuthentication, adminAuthorization } = require('../middleware/AdminAuth')
 const { CreateTrip, getAllTrip,getTripById } = require('../controller/TripController')
+const {BookTrip} = require('../controller/BookTrip')
 const multer = require('multer')
 const routes = express.Router();
 
@@ -25,6 +26,11 @@ routes.post('/admin_otp_verification/:id', adminAuthentication, adminAuthorizati
 routes.post('/CreateTrip/:id', upload.single('productImg'), CreateTrip)
 routes.get('/getAllTrip/:cate', getAllTrip)
 routes.get('/getTripById/:id', getTripById)
+
+
+// Book Trip API's
+routes.post('/book_trip/:productId/:id', userAuthentication, userAuthorization, BookTrip)
+
 
 routes.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 

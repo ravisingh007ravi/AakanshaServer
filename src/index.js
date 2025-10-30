@@ -5,7 +5,7 @@ const router =require('./routes/routes');
 require('dotenv').config();
 
 const app = express(); 
-
+const Port = 8000
 app.use(express.json())
 app.use(cors());
 
@@ -15,7 +15,7 @@ mongoose.connect(process.env.MongoDB)
 
 app.use('/', router)
 
-app.listen(8000, () => console.log(`Server is running on port 8080`));  
+app.listen(Port, () => console.log(`Server is running on port ${Port}`));  
 
 
 
