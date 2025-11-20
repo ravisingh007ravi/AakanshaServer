@@ -39,7 +39,7 @@ exports.getAllTrip = async (req, res) => {
   try {
     const { cate } = req.params;
     const page = parseInt(req.query.page) || 1; 
-    const limit = parseInt(req.query.limit) || 10; 
+    const limit = parseInt(req.query.limit) || 20; 
     const skip = (page - 1) * limit;
     const search = req.query.search || '';
 
@@ -81,6 +81,29 @@ exports.getTripById =async(req,res)=>{
   }
 }
 
+exports.updateTripImg=async(req,res)=>{
+  try{
+    const file = req.file;
 
+    if (!file) return res.status(400).send({ status: false, msg: "img must be present" })
+
+    const id = req.params.id
+    const checkProduct = await TripModel.findById(id)
+    if (!checkProduct) return res.status(400).send({ status: false, msg: "Product not found" })
+
+    if (checkProduct?.productImg?.public_id) {
+      deleteProfileImg(checkProduct.productImg.public_id)
+    }
+    const imgData = await ProductLoadImg(file.path)
+
+    const updateUserDB = await TripModel.findByIdAndUpdate({ _id: id }, { $set: { 'productImg': imgData } }, { new: true });
+
+    res.status(200).send({ status: true, msg: "Successfully uploaded img", data: updateUserDB })
+    }
+  
+  catch (error) {
+    AllError(error, res);
+  }
+}
 
 

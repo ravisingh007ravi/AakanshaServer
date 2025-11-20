@@ -20,7 +20,7 @@ const tripSchema = new mongoose.Schema(
 
     location: {
       country: { type: String, required: true },
-      city: { type: String,enum: ["Manali", "Kedarnath", "Shimla", "Leh", "Goa", "Nainital", "Ooty","Udaipur","Uttarakhand","Uttar Pradesh"], required: true },
+      city: { type: String, enum: ["Manali", "Kedarnath", "Shimla", "Leh", "Goa", "Nainital", "Ooty", "Udaipur", "Uttarakhand", "Uttar Pradesh"], required: true },
       address: { type: String },
     },
 
@@ -69,6 +69,13 @@ const tripSchema = new mongoose.Schema(
         activities: [{ type: String, required: true }],
       },
     ],
+    reviews: [
+      {
+        name: { type: String, required: false },
+        review: { type: String, required: false },
+        rating: { type: Number, required: false }
+      }
+    ],
 
     inclusions: [String],
     exclusions: [String],
@@ -88,7 +95,7 @@ const tripSchema = new mongoose.Schema(
       ref: "User", // Admin User
       required: true,
     },
-    mapLocation:{
+    mapLocation: {
       type: String,
       required: false,
       trim: true

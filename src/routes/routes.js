@@ -3,7 +3,7 @@ const { CreateUser, userOtpVerifucation, UserLogIn, resendUserOtp, uploadProfile
 const { getAllUserData, AdminLogIn, AdminOtpVerification } = require('../controller/adminController')
 const { userAuthentication, userAuthorization } = require('../middleware/userAuth')
 const { adminAuthentication, adminAuthorization } = require('../middleware/AdminAuth')
-const { CreateTrip, getAllTrip,getTripById } = require('../controller/TripController')
+const { CreateTrip, getAllTrip,getTripById,updateTripImg } = require('../controller/TripController')
 const {BookTrip} = require('../controller/BookTrip')
 const multer = require('multer')
 const routes = express.Router();
@@ -26,6 +26,7 @@ routes.post('/admin_otp_verification/:id', adminAuthentication, adminAuthorizati
 routes.post('/CreateTrip/:id', upload.single('productImg'), CreateTrip)
 routes.get('/getAllTrip/:cate', getAllTrip)
 routes.get('/getTripById/:id', getTripById)
+routes.put('/updateTripImg/:id', upload.single('productImg'), updateTripImg)
 
 
 // Book Trip API's
